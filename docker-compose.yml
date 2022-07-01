@@ -16,6 +16,7 @@ services:
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       INSTANCE_NAME: "${INSTANCE_NAME}"
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
     container_name: ${DOCKER_IMAGE_PREFIX}php
     restart: always
 
@@ -26,6 +27,7 @@ services:
         APACHE_VERSION: ${APACHE_VERSION}
     depends_on:
       - php
+      - mariadb
     networks:
       - frontend
       - backend
@@ -41,8 +43,8 @@ services:
     restart: always
     ports:
       - "${EXTERNAL_MYSQL_PORT}:3306"
-    # volumes:
-    #   - ./mysql/data/:/var/lib/mysql
+    volumes:
+      - ./mysql/data/:/var/lib/mysql
     networks:
       - backend
     environment:
@@ -64,10 +66,7 @@ services:
       - mariadb
     environment:
       PMA_HOST: mariadb
-      PMA_VERBOSE: "${DB_NAME}"
-      PMA_USER: "${DB_USERNAME}"
-      PMA_PASSWORD: "${DB_PASSWORD}"
-      PMA_PORT: "${EXTERNAL_MYSQL_PORT}"
+      PMA_PORT: 3306
     container_name: "${DOCKER_IMAGE_PREFIX}phpmyadmin"
 
 networks:
