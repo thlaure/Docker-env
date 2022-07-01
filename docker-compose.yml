@@ -16,7 +16,6 @@ services:
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
       INSTANCE_NAME: "${INSTANCE_NAME}"
-      PROJECT_COLOR: "${PROJECT_COLOR}"
     container_name: ${DOCKER_IMAGE_PREFIX}php
     restart: always
 
@@ -37,15 +36,13 @@ services:
     container_name: ${DOCKER_IMAGE_PREFIX}apache
     restart: always
 
-  mysql:
-    image: mysql:${MYSQL_VERSION}
-    command:
-      - mysqld
+  mariadb:
+    image: mariadb
     restart: always
     ports:
       - "${EXTERNAL_MYSQL_PORT}:3306"
-    volumes:
-      - ./mysql/data/:/var/lib/mysql
+    # volumes:
+    #   - ./mysql/data/:/var/lib/mysql
     networks:
       - backend
     environment:
@@ -54,7 +51,24 @@ services:
       MYSQL_DATABASE: "${DB_NAME}"
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
-    container_name: ${DOCKER_IMAGE_PREFIX}mysql
+    container_name: "${DOCKER_IMAGE_PREFIX}mariadb"
+  
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "${EXTERNAL_PMA_PORT}:80"
+    networks:
+      - backend
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_VERBOSE: "${DB_NAME}"
+      PMA_USER: "${DB_USERNAME}"
+      PMA_PASSWORD: "${DB_PASSWORD}"
+      PMA_PORT: "${EXTERNAL_MYSQL_PORT}"
+    container_name: "${DOCKER_IMAGE_PREFIX}phpmyadmin"
 
 networks:
   frontend:
