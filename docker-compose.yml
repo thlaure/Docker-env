@@ -54,6 +54,13 @@ services:
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
     container_name: "${DOCKER_IMAGE_PREFIX}mariadb"
+    
+  mailcatcher:
+    image: dockage/mailcatcher
+    restart: on-failure
+    ports:
+      - "1080:1080"
+      - "1025:1025"
   
   phpmyadmin:
     image: phpmyadmin

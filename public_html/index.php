@@ -1,6 +1,6 @@
 <?php
 
-// echo phpinfo();
+echo phpinfo();
 
 echo 'Hello, World!';
 
@@ -15,7 +15,7 @@ try {
     $results = $stmt->fetchAll();
     
     echo '<pre>';
-    var_dump($results);
+    print_r($results);
     echo '</pre>';
 }
 catch (PDOException $e) {
