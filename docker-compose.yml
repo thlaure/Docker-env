@@ -27,7 +27,7 @@ services:
         APACHE_VERSION: ${APACHE_VERSION}
     depends_on:
       - php
-      - mariadb
+      - mysql
     networks:
       - frontend
       - backend
@@ -38,8 +38,8 @@ services:
     container_name: ${DOCKER_IMAGE_PREFIX}apache
     restart: always
 
-  mariadb:
-    image: mariadb
+  mysql:
+    image: mysql:${MYSQL_VERSION}
     restart: always
     ports:
       - "${EXTERNAL_MYSQL_PORT}:3306"
@@ -53,11 +53,13 @@ services:
       MYSQL_DATABASE: "${DB_NAME}"
       MYSQL_USER: "${DB_USERNAME}"
       MYSQL_PASSWORD: "${DB_PASSWORD}"
-    container_name: "${DOCKER_IMAGE_PREFIX}mariadb"
-    
+    container_name: ${DOCKER_IMAGE_PREFIX}mysql
+
   mailcatcher:
     image: dockage/mailcatcher
     restart: on-failure
+    networks:
+      - backend
     ports:
       - "1080:1080"
       - "1025:1025"
@@ -70,9 +72,9 @@ services:
     networks:
       - backend
     depends_on:
-      - mariadb
+      - mysql
     environment:
-      PMA_HOST: mariadb
+      PMA_HOST: mysql
       PMA_PORT: 3306
     container_name: "${DOCKER_IMAGE_PREFIX}phpmyadmin"
 
