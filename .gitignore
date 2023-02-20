@@ -1,6 +1,6 @@
 .env
 .docker-compose.swp
 .vscode
-/projets
-/vhosts
+public_html/
+vhosts/
 .DS_Store
